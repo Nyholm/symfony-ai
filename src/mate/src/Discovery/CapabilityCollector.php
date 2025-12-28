@@ -12,12 +12,15 @@
 namespace Symfony\AI\Mate\Discovery;
 
 use Mcp\Capability\Discovery\Discoverer;
+use Mcp\Capability\Registry\PromptReference;
+use Mcp\Capability\Registry\ResourceTemplateReference;
+use Mcp\Capability\Registry\ToolReference;
 use Psr\Log\LoggerInterface;
 
 /**
  * Collects MCP capabilities from discovered extensions.
  *
- * @phpstan-type CapabilitiesByExtension array<string, array{
+ * @phpstan-type Capabilities array{
  *     tools: array<string, array{
  *         name: string,
  *         description: string|null,
@@ -43,70 +46,52 @@ use Psr\Log\LoggerInterface;
  *         description: string|null,
  *         handler: string
  *     }>
- * }>
+ * }
  *
  * @author Johannes Wachter <johannes@sulu.io>
  */
 class CapabilityCollector
 {
-    private ComposerTypeDiscovery $discovery;
-
-    public function __construct(
-        private LoggerInterface $logger,
-        private string $rootDir,
-    ) {
-        $this->discovery = new ComposerTypeDiscovery($rootDir, $logger);
-    }
+    private Discoverer $discoverer;
+    private FilteredDiscoveryLoader $loader;
 
     /**
-     * Get extensions to load (mirrors ServeCommand logic).
-     *
-     * @param array<int, string> $enabledExtensions
-     *
-     * @return array<string, array{dirs: string[], includes: string[]}>
-     */
-    public function getExtensionsToLoad(array $enabledExtensions): array
-    {
-        $extensions = [];
-
-        foreach ($this->discovery->discover($enabledExtensions) as $packageName => $data) {
-            $extensions[$packageName] = $data;
-        }
-
-        $extensions['_custom'] = $this->discovery->discoverRootProject();
-
-        return $extensions;
-    }
-
-    /**
-     * Collect all capabilities grouped by extension.
-     *
      * @param array<string, array{dirs: string[], includes: string[]}> $extensions
-     *
-     * @return CapabilitiesByExtension
+     * @param array<string, array<string, array{enabled: bool}>>       $disabledFeatures
      */
-    public function collectCapabilities(array $extensions): array
-    {
-        $discoverer = new Discoverer($this->logger);
-        $capabilitiesByExtension = [];
-
-        foreach ($extensions as $packageName => $data) {
-            $state = $discoverer->discover($this->rootDir, $data['dirs']);
-
-            $capabilitiesByExtension[$packageName] = [
-                'tools' => $this->formatTools($state->getTools()),
-                'resources' => $this->formatResources($state->getResources()),
-                'prompts' => $this->formatPrompts($state->getPrompts()),
-                'resource_templates' => $this->formatResourceTemplates($state->getResourceTemplates()),
-            ];
-        }
-
-        return $capabilitiesByExtension;
+    public function __construct(
+        string $rootDir,
+        array $extensions,
+        array $disabledFeatures,
+        private LoggerInterface $logger,
+    ) {
+        $this->discoverer = new Discoverer($this->logger);
+        $this->loader = new FilteredDiscoveryLoader(
+            $rootDir,
+            $extensions,
+            $disabledFeatures,
+            $this->discoverer,
+            $this->logger,
+        );
     }
 
     /**
-     * Extract handler info (class::method or class name).
+     * @param array{dirs: string[], includes: string[]} $extension
+     *
+     * @return Capabilities
      */
+    public function collectCapabilities(string $extensionName, array $extension): array
+    {
+        $state = $this->loader->loadByExtension($extensionName, $extension);
+
+        return [
+            'tools' => $this->formatTools($state->getTools()),
+            'resources' => $this->formatResources($state->getResources()),
+            'prompts' => $this->formatPrompts($state->getPrompts()),
+            'resource_templates' => $this->formatResourceTemplates($state->getResourceTemplates()),
+        ];
+    }
+
     private function getHandlerInfo(mixed $handler): string
     {
         if (\is_array($handler)) {
@@ -126,7 +111,7 @@ class CapabilityCollector
     }
 
     /**
-     * @param array<string, \Mcp\Capability\Registry\ToolReference> $tools
+     * @param array<string, ToolReference> $tools
      *
      * @return array<string, array{name: string, description: string|null, handler: string, input_schema: array<string, mixed>|null}>
      */
@@ -167,7 +152,7 @@ class CapabilityCollector
     }
 
     /**
-     * @param array<string, \Mcp\Capability\Registry\PromptReference> $prompts
+     * @param array<string, PromptReference> $prompts
      *
      * @return array<string, array{name: string, description: string|null, handler: string, arguments: array<mixed>|null}>
      */
@@ -187,7 +172,7 @@ class CapabilityCollector
     }
 
     /**
-     * @param array<string, \Mcp\Capability\Registry\ResourceTemplateReference> $templates
+     * @param array<string, ResourceTemplateReference> $templates
      *
      * @return array<string, array{uri_template: string, name: string|null, description: string|null, handler: string}>
      */
