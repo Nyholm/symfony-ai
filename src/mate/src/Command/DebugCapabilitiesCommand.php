@@ -36,6 +36,11 @@ class DebugCapabilitiesCommand extends Command
 {
     private CapabilityCollector $collector;
 
+    /**
+     * @var array<string, array{dirs: string[], includes: string[]}>
+     */
+    private array $extensions;
+
     public function __construct(
         LoggerInterface $logger,
         private ContainerInterface $container,
@@ -45,8 +50,9 @@ class DebugCapabilitiesCommand extends Command
         $rootDir = $container->getParameter('mate.root_dir');
         \assert(\is_string($rootDir));
 
-        $extensions = $this->container->getParameter('mate._extensions') ?? [];
+        $extensions = $this->container->getParameter('mate.extensions') ?? [];
         \assert(\is_array($extensions));
+        $this->extensions = $extensions;
 
         $disabledFeatures = $this->container->getParameter('mate.disabled_features') ?? [];
         \assert(\is_array($disabledFeatures));
@@ -101,11 +107,8 @@ HELP
     {
         $io = new SymfonyStyle($input, $output);
 
-        $extensions = $this->container->getParameter('mate._extensions') ?? [];
-        \assert(\is_array($extensions));
-
         $capabilities = [];
-        foreach ($extensions as $extensionName => $extension) {
+        foreach ($this->extensions as $extensionName => $extension) {
             $capabilities[$extensionName] = $this->collector->collectCapabilities($extensionName, $extension);
         }
 

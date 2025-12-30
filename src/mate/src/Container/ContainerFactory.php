@@ -67,7 +67,7 @@ final class ContainerFactory
     {
         $enabledExtensions = $this->getEnabledExtensions();
         if ([] === $enabledExtensions) {
-            $container->setParameter('mate._extensions', [
+            $container->setParameter('mate.extensions', [
                 '_custom' => $extensionDiscovery->discoverRootProject(),
             ]);
 
@@ -83,7 +83,7 @@ final class ContainerFactory
         $extensions['_custom'] = $extensionDiscovery->discoverRootProject();
 
         $this->registerServices($container, $extensions, $logger);
-        $container->setParameter('mate._extensions', $extensions);
+        $container->setParameter('mate.extensions', $extensions);
     }
 
     /**

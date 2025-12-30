@@ -38,7 +38,7 @@ final class DebugCapabilitiesCommandTest extends TestCase
         $container->setParameter('mate.root_dir', $rootDir);
         $container->setParameter('mate.enabled_extensions', ['vendor/package-a', 'vendor/package-b']);
         $container->setParameter('mate.disabled_features', []);
-        $container->setParameter('mate._extensions', [
+        $container->setParameter('mate.extensions', [
             'vendor/package-a' => ['dirs' => ['mate/src'], 'includes' => []],
             '_custom' => ['dirs' => [], 'includes' => []],
         ]);
@@ -61,7 +61,7 @@ final class DebugCapabilitiesCommandTest extends TestCase
         $container->setParameter('mate.root_dir', $rootDir);
         $container->setParameter('mate.enabled_extensions', []);
         $container->setParameter('mate.disabled_features', []);
-        $container->setParameter('mate._extensions', [
+        $container->setParameter('mate.extensions', [
             'vendor/package-a' => ['dirs' => ['mate/src'], 'includes' => []],
             '_custom' => ['dirs' => [], 'includes' => []],
         ]);
@@ -83,7 +83,7 @@ final class DebugCapabilitiesCommandTest extends TestCase
         $container->setParameter('mate.root_dir', $rootDir);
         $container->setParameter('mate.enabled_extensions', []);
         $container->setParameter('mate.disabled_features', []);
-        $container->setParameter('mate._extensions', [
+        $container->setParameter('mate.extensions', [
             'vendor/package-a' => ['dirs' => ['mate/src'], 'includes' => []],
             '_custom' => ['dirs' => [], 'includes' => []],
         ]);
@@ -114,7 +114,7 @@ final class DebugCapabilitiesCommandTest extends TestCase
         $container->setParameter('mate.root_dir', $rootDir);
         $container->setParameter('mate.enabled_extensions', ['vendor/package-a', 'vendor/package-b']);
         $container->setParameter('mate.disabled_features', []);
-        $container->setParameter('mate._extensions', [
+        $container->setParameter('mate.extensions', [
             'vendor/package-a' => ['dirs' => ['mate/src'], 'includes' => []],
             '_custom' => ['dirs' => [], 'includes' => []],
         ]);
@@ -138,7 +138,7 @@ final class DebugCapabilitiesCommandTest extends TestCase
         $container->setParameter('mate.root_dir', $rootDir);
         $container->setParameter('mate.enabled_extensions', []);
         $container->setParameter('mate.disabled_features', []);
-        $container->setParameter('mate._extensions', [
+        $container->setParameter('mate.extensions', [
             'vendor/package-a' => ['dirs' => ['mate/src'], 'includes' => []],
             '_custom' => ['dirs' => [], 'includes' => []],
         ]);
@@ -159,7 +159,7 @@ final class DebugCapabilitiesCommandTest extends TestCase
         $container->setParameter('mate.root_dir', $rootDir);
         $container->setParameter('mate.enabled_extensions', []);
         $container->setParameter('mate.disabled_features', []);
-        $container->setParameter('mate._extensions', [
+        $container->setParameter('mate.extensions', [
             'vendor/package-a' => ['dirs' => ['mate/src'], 'includes' => []],
             '_custom' => ['dirs' => [], 'includes' => []],
         ]);
@@ -179,7 +179,7 @@ final class DebugCapabilitiesCommandTest extends TestCase
         $container->setParameter('mate.root_dir', $rootDir);
         $container->setParameter('mate.enabled_extensions', []);
         $container->setParameter('mate.disabled_features', []);
-        $container->setParameter('mate._extensions', [
+        $container->setParameter('mate.extensions', [
             'vendor/package-a' => ['dirs' => ['mate/src'], 'includes' => []],
             '_custom' => ['dirs' => [], 'includes' => []],
         ]);
@@ -200,7 +200,7 @@ final class DebugCapabilitiesCommandTest extends TestCase
         $container->setParameter('mate.root_dir', $rootDir);
         $container->setParameter('mate.enabled_extensions', ['vendor/package-a']);
         $container->setParameter('mate.disabled_features', []);
-        $container->setParameter('mate._extensions', [
+        $container->setParameter('mate.extensions', [
             'vendor/package-a' => ['dirs' => ['mate/src'], 'includes' => []],
             '_custom' => ['dirs' => [], 'includes' => []],
         ]);
@@ -223,7 +223,7 @@ final class DebugCapabilitiesCommandTest extends TestCase
         $container->setParameter('mate.root_dir', $rootDir);
         $container->setParameter('mate.enabled_extensions', []);
         $container->setParameter('mate.disabled_features', []);
-        $container->setParameter('mate._extensions', [
+        $container->setParameter('mate.extensions', [
             'vendor/package-a' => ['dirs' => ['mate/src'], 'includes' => []],
             '_custom' => ['dirs' => [], 'includes' => []],
         ]);
